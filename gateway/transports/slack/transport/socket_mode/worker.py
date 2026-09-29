@@ -112,7 +112,10 @@ def start_slack_gateway_background(
             # Greeting posts a message (network call): hand it to a worker.
             executor.submit(greeter.handle, request.payload)
             return
-        inbound = parse_events_api_payload(request.payload)
+        inbound = parse_events_api_payload(
+            request.payload,
+            open_channel_ids=settings.open_channel_ids,
+        )
         if inbound is None:
             return
         executor.submit(dispatcher.dispatch, inbound)
